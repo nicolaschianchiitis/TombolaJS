@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="it">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Tombola</title>
+        <style>
+            table, th, td{
+                border: 2px solid black;
+                border-collapse: collapse;
+                color: black;
+                text-align: center;
+                font-size: 24px;
+            }
+            table{
+                width: 60%;
+            }
+            button{
+                font-size: 14px;
+            }
+        </style>
+    </head>
+    <body>
+        <center>
+            <h1>Tombola</h1>
+            <h2>Tabellone</h2>
+            <table id="tabellone"></table>
+            <br>
+            <button id="estraiNumero" onclick="estraiNumero()">Estrai un numero...</button>
+            <button id="reset" onclick="reset()">Reset</button>
+            <br>
+            <!-- Inizialmente vengono mostrate le istruzioni -->
+            <p id="msg">
+                <i>
+                    Clicca sul bottone "Estrai un numero..."
+                    per iniziare le estrazioni, su "Reset" per
+                    reimpostare il tabellone e ricominciare ad
+                    estrarre i numeri
+                </i>
+            </p>
+        </center>
+        <script>
+            // Funzione per estrarre un numero
+            function estraiNumero(){
+                if (numeri.length > 0){ // Se ci sono ancora numeri disponibili
+                    // Seleziona il numero ad un indice random dell'array di numeri
+                    const numeroEstratto = numeri[Math.floor(Math.random() * (numeri.length))];
+                    numeri.splice(numeri.indexOf(numeroEstratto), 1); // Rimuovi il numero estratto dall'array
+                    // E segna che il numero è uscito
+                    document.getElementById("num" + numeroEstratto).style.backgroundColor = "rgb(85, 178, 244)";
+                    document.getElementById("msg").innerHTML = "<i>Numero estratto: " + numeroEstratto + "</i>";
+                } else{ // Se tutti i numeri sono stati estratti...
+                    document.getElementById("msg").innerHTML = "<i style=\"color: red\">Hai estratto tutti i numeri!</i>";
+                }
+            }
+
+            // Funzione per resettare il tabellone
+            function reset(){
+                // Ripristina il colore originale delle celle del tabellone
+                for (let i = 0; i < (nRighe * numPerRiga); i++){
+                    let numero = document.getElementById("num" + (i+1));
+                    if (numero.hasAttribute("style")){
+                        numero.style.backgroundColor = "";
+                    }
+                }
+                document.getElementById("msg").innerHTML = "<i>Reset avvenuto correttamente!</i>";
+                
+                // Rigenerazione array dei numeri
+                let nuovoArrNumeri = [];
+                for (let i = 1; i < ((nRighe * numPerRiga) + 1); i++){
+                    nuovoArrNumeri.push(i);
+                }
+                numeri = nuovoArrNumeri;
+            }
+
+            let numeri = []; // Array di numeri
+            const nRighe = 9, numPerRiga = 10;
+            const tabellone = document.getElementById("tabellone");
+            // Numero usato per identificare le celle del tabellone
+            let numProgressivo = 1;
+            for (let i = 0; i < nRighe; i++){
+                // Creazione di una riga
+                let riga = document.createElement("tr");
+                riga.id = "riga" + i;
+                tabellone.appendChild(riga);
+                for (let j = 0; j < numPerRiga; j++){
+                    // Creazione dei numeri del tabellone, per ogni riga
+                    let numero = document.createElement("td");
+                    numero.id = "num" + numProgressivo;
+                    numero.innerHTML = numProgressivo;
+                    numeri.push(numProgressivo);
+                    numProgressivo++;
+                    riga.appendChild(numero);
+                }
+            }
+        </script>
+    </body>
+</html>
